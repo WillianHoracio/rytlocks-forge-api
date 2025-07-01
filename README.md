@@ -6,6 +6,12 @@ Backend Laravel 11 to track legendary weapon progress in Guild Wars 2.
 
 ---
 
+## 🗺️ Roadmap
+
+You can follow the project's progress on the [Project Board](https://github.com/users/WillianHoracio/projects/2).
+
+---
+
 ## 🚀 Features
 
 - 🔑 Authentication via GW2 API Key  
