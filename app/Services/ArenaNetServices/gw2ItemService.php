@@ -4,7 +4,7 @@
 
     use Illuminate\Support\Facades\Http;
 
-    class Gw2ApiService
+    class Gw2ItemService
     {
 
         protected string $baseUrl = 'https://api.guildwars2.com/v2';
@@ -13,6 +13,7 @@
         {
             return Http::get("{$this->baseUrl}/items");
         }
+
         public function getItem(int $id)
         {
             return Http::get("{$this->baseUrl}/items/{$id}");
