@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ItemController;
+use App\Http\Controllers\GameItemController;
 
 
 Route::middleware('api')->group(function () {
-    Route::get('/gw2/item', [ItemController::class, 'getAllItens']);
-    Route::get('/gw2/item/{id}', [ItemController::class, 'show']);
+    Route::get('/gw2/item', [GameItemController::class, 'getAllItens']);
+    Route::get('/gw2/item/{id}', [GameItemController::class, 'show']);
 });
 
 
