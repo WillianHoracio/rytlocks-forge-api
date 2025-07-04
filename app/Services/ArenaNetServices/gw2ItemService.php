@@ -9,6 +9,7 @@
 
 namespace App\Services\ArenaNetServices;
 
+use Illuminate\Support\Facades\Cache;
 use App\Exceptions\Gw2ApiException;
 use App\Services\ArenaNetServices\Gw2Validator;
 use App\Services\ArenaNetServices\Gw2HttpClient;
@@ -18,81 +19,97 @@ class Gw2ItemService
 
     protected const API_VERSION = 'v2';
     protected const BASE_URL = 'https://api.guildwars2.com/' . self::API_VERSION;
+    protected $cacheTimer;
     protected $validator;
     protected $httpClient;
+    protected $url;
 
     public function __construct(Gw2Validator $validator, Gw2HttpClient $httpClient)
     {
         $this->validator = $validator;
         $this->httpClient = $httpClient;
+        $this->cacheTimer = config('gw2.api_cache_time');
+        $this->url = config('gw2.api_base_url') . config('gw2.api_version');
     }
 
     public function getAllFinishers() 
     {
-        return $this->httpClient->get(self::BASE_URL."/finisher");
+        return Cache::remember("allFinishers", $this->cacheTimer, function (){
+            return $this->httpClient->get($this->url."/finisher");
+        });
     }
 
     public function getFinisher(int $id) 
     {
         $this->validator->validateId($id);
-        return $this->httpClient->get(self::BASE_URL."/finisher/{$id}");
+        return Cache::remember("finisher_{$id}", $this->cacheTimer, function () use ($id){
+            return $this->httpClient->get($this->url."/finisher/{$id}");
+        });
     }
 
     public function getFinishers(array $ids)
     {
         $this->validator->validateIds($ids);
-        return $this->httpClient->get(self::BASE_URL."/finisher", [ "ids" => implode(',', $ids)]);
+        return $this->httpClient->get($this->url."/finisher", [ "ids" => implode(',', $ids)]);
     }
 
     public function getItem(int $id)
     {
         $this->validator->validateId($id);
-        return $this->httpClient->get(self::BASE_URL."/items/{$id}");
+        return Cache::remember("item_{$id}", $this->cacheTimer, function () use ($id){
+            return $this->httpClient->get($this->url."/items/{$id}");
+        });
     }
 
     public function getItems(array $ids)
     {
         $this->validator->validateIds($ids);
-        return $this->httpClient->get(self::BASE_URL."/items", [ "ids" => implode(',', $ids)]);
+        return $this->httpClient->get($this->url."/items", [ "ids" => implode(',', $ids)]);
     }
 
     public function getAllItems()
     {
-        return $this->httpClient->get(self::BASE_URL."/items");
+        return Cache::remember("allItems", $this->cacheTimer, function (){
+            return $this->httpClient->get($this->url."/items");
+        });
     }
 
     public function getItemStats(int $id)
     {   
         $this->validator->validateId($id);
-        return $this->httpClient->get(self::BASE_URL."/itemstats/{$id}");
+        return $this->httpClient->get($this->url."/itemstats/{$id}");
     }
 
     public function getItemsStats(array $ids)
     {
         $this->validator->validateIds($ids);
-        return $this->httpClient->get(self::BASE_URL."/itemstats", ["ids" => implode(',', $ids)]);
+        return $this->httpClient->get($this->url."/itemstats", ["ids" => implode(',', $ids)]);
     }
 
     public function getAllItemStats()
     {
-        return $this->httpClient->get(self::BASE_URL."/itemstats");
+        return Cache::remember("allItemStats", $this->cacheTimer, function () {
+            return $this->httpClient->get($this->url."/itemstats");
+        });
     }
 
     public function getMaterialCategory(int $id)
     {
         $this->validator->validateId($id);
-        return $this->httpClient->get(self::BASE_URL."/materials/{$id}");
+        return $this->httpClient->get($this->url."/materials/{$id}");
     }
 
     public function getAllMaterialCategories()
     {
-        return $this->httpClient->get(self::BASE_URL."/materials");
+        return Cache::remember("allMaterialCategories", $this->cacheTimer, function (){
+            return $this->httpClient->get($this->url."/materials");
+        });
     }
 
     public function getPvpAmulet(int $id)
     {
         $this->validator->validateId($id);
-        return $this->httpClient->get(self::BASE_URL."/pvp/amulets/{$id}");
+        return $this->httpClient->get($this->url."/pvp/amulets/{$id}");
     }
 
     public function getAllPvpAmulets(int $page = 0, int $pageSize = 0)
@@ -102,18 +119,18 @@ class Gw2ItemService
             'page_size' => $pageSize > 0 ? $pageSize : null,
         ]);
 
-        return $this->httpClient->get(self::BASE_URL."/pvp/amulets", $params);
+        return $this->httpClient->get($this->url."/pvp/amulets", $params);
     }
 
     public function getRecipe(int $id)
     {
         $this->validator->validateId($id);
-        return $this->httpClient->get(self::BASE_URL."/recipes/{$id}");
+        return $this->httpClient->get($this->url."/recipes/{$id}");
     }
 
     public function getAllRecipes()
     {
-        return $this->httpClient->get(self::BASE_URL."/recipes");
+        return $this->httpClient->get($this->url."/recipes");
     }
 
     public function getRecipeSearch(int $inputId = 0, int $outputId = 0)
@@ -124,7 +141,7 @@ class Gw2ItemService
         ]);
 
         if (!empty($params)) {
-            return $this->httpClient->get(self::BASE_URL."/recipes/search", $params);
+            return $this->httpClient->get($this->url."/recipes/search", $params);
         }
 
         throw new Gw2ApiException('Error: No inputId or outputId informed on getRecipeSearch endpoint', 000);
@@ -133,12 +150,14 @@ class Gw2ItemService
     public function getSkin(int $id)
     {
         $this->validator->validateId($id);
-        return $this->httpClient->get(self::BASE_URL."/skins/{$id}");
+        return $this->httpClient->get($this->url."/skins/{$id}");
     }
 
     public function getAllSkins()
     {
-        return $this->httpClient->get(self::BASE_URL."/skins");
+        return Cache::remember("allSkins", $this->cacheTimer, function (){
+            return $this->httpClient->get($this->url."/skins");
+        });
     }
 
 }
