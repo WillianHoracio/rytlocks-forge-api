@@ -17,8 +17,6 @@ use App\Services\ArenaNetServices\Gw2HttpClient;
 class Gw2ItemService
 {
 
-    protected const API_VERSION = 'v2';
-    protected const BASE_URL = 'https://api.guildwars2.com/' . self::API_VERSION;
     protected $cacheTimer;
     protected $validator;
     protected $httpClient;
