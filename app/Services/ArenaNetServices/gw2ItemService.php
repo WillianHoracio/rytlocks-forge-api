@@ -7,271 +7,138 @@
 // │   Centralizes HTTP calls and response error handling.                       │
 // └─────────────────────────────────────────────────────────────────────────────┘
 
-    namespace App\Services;
+namespace App\Services\ArenaNetServices;
 
-    use Illuminate\Support\Facades\Http;
-    use Illuminate\Support\Facades\Log;
-    use App\Exceptions\Gw2ApiException;
+use App\Exceptions\Gw2ApiException;
+use App\Services\ArenaNetServices\Gw2Validator;
+use App\Services\ArenaNetServices\Gw2HttpClient;
 
-    class Gw2ItemService
+class Gw2ItemService
+{
+
+    protected const API_VERSION = 'v2';
+    protected const BASE_URL = 'https://api.guildwars2.com/' . self::API_VERSION;
+    protected $validator;
+    protected $httpClient;
+
+    public function __construct(Gw2Validator $validator, Gw2HttpClient $httpClient)
     {
-
-        protected const BASE_URL = 'https://api.guildwars2.com/v2';
-
-// ┌─────────────────────────────────────────────────────────────────────────────┐
-// │                            Finishers Endpoints                              │
-// └─────────────────────────────────────────────────────────────────────────────┘
-
-        public function getAllFinishers() 
-        {
-            return $this->execute(function(){
-                $response = $this->http()->get(self::BASE_URL."/finisher");
-                return $this->handleResponse($response);
-            });
-        }
-
-        public function getFinisher(int $id) 
-        {
-            return $this->execute(function() use ($id){
-                $this->validateId($id);
-                $response = $this->http()->get(self::BASE_URL."/finisher/{$id}");
-                return $this->handleResponse($response);
-            });
-        }
-
-        public function getFinishers(array $ids)
-        {
-            return $this->execute(function() use ($ids){
-                $this->validateIds($ids);
-                $response = $this->http()->get(self::BASE_URL."/finisher", [ "ids" => implode(',', $ids)]);
-                return $this->handleResponse($response);
-            });
-        }
-
-// ┌─────────────────────────────────────────────────────────────────────────────┐
-// │                              Items Endpoints                                │
-// └─────────────────────────────────────────────────────────────────────────────┘
-
-        public function getItem(int $id)
-        {
-            return $this->execute(function() use ($id) {
-                $this->validateId($id);
-                $response = $this->http()->get(self::BASE_URL."/items/{$id}");
-                return $this->handleResponse($response);
-            });
-        }
-
-        public function getItems(array $ids)
-        {
-            return $this->execute(function() use ($ids) {
-                $this->validateIds($ids);
-                $response = $this->http()->get(self::BASE_URL."/items", [ "ids" => implode(',', $ids)]);
-                return $this->handleResponse($response);
-            });            
-        }
-
-        public function getAllItems()
-        {
-            return $this->execute(function() {
-                $response = $this->http()->get(self::BASE_URL."/items");
-                return $this->handleResponse($response);
-            });
-        }
-
-// ┌─────────────────────────────────────────────────────────────────────────────┐
-// │                            Itemstats Endpoints                              │
-// └─────────────────────────────────────────────────────────────────────────────┘
-
-        public function getItemStats(int $id)
-        {   
-            return $this->execute(function() use($id){
-                $this->validateId($id);
-                $response = $this->http()->get(self::BASE_URL."/itemstats/{$id}");
-                return $this->handleResponse($response);
-            });
-        }
-
-        public function getItemsStats(array $ids)
-        {
-            return $this->execute(function() use($ids){
-                $this->validateIds($ids);
-                $response = $this->http()->get(self::BASE_URL."/itemstats", ["ids" => implode(',', $ids)]);
-                return $this->handleResponse($response);
-            });
-        }
-
-        public function getAllItemStats()
-        {
-            return $this->execute(function() {
-                $response = $this->http()->get(self::BASE_URL."/itemstats");
-                return $this->handleResponse($response);
-            });
-        }
-
-// ┌─────────────────────────────────────────────────────────────────────────────┐
-// │                        Materials Categorys Endpoints                        │
-// └─────────────────────────────────────────────────────────────────────────────┘
-
-        public function getMaterialCategory(int $id)
-        {
-            return $this->execute(function() use($id) {
-                $this->validateId($id);
-                $response = $this->http()->get(self::BASE_URL."/materials/{$id}");
-                return $this->handleResponse($response);
-            });
-        }
-
-        public function getAllMaterialCategorys()
-        {
-            return $this->execute(function() {
-                $response = $this->http()->get(self::BASE_URL."/materials");
-                return $this->handleResponse($response);
-            });
-        }
-
-// ┌─────────────────────────────────────────────────────────────────────────────┐
-// │                            Pvp Amulets Endpoints                            │
-// └─────────────────────────────────────────────────────────────────────────────┘
-
-        public function getPvpAmulet(int $id)
-        {
-            return $this->execute(function() use($id) {
-                $this->validateId($id);
-                $response = $this->http()->get(self::BASE_URL."/pvp/amulets/{$id}");
-                return $this->handleResponse($response);
-            });
-
-        }
-
-        public function getAllPvpAmulets(int $page = 0, int $pageSize = 0)
-        {
-            return $this->execute(function() use($page, $pageSize) {
-                $params = array_filter([
-                    'page' => $page > 0 ? $page : null,
-                    'page_size' => $pageSize > 0 ? $pageSize : null,
-                ]);
-
-                $response = $this->http()->get(self::BASE_URL."/pvp/amulets", $params);
-                return $this->handleResponse($response);
-            });
-        }
-
-// ┌─────────────────────────────────────────────────────────────────────────────┐
-// │                              Recipes Endpoints                              │
-// └─────────────────────────────────────────────────────────────────────────────┘
-
-        public function getRecipe(int $id)
-        {
-            return $this->execute(function() use($id) {
-                $this->validateId($id);
-                $response = $this->http()->get(self::BASE_URL."/recipes/{$id}");
-                return $this->handleResponse($response);
-            });
-        }
-
-        public function getAllRecipes()
-        {
-            return $this->execute(function() {
-                $response = $this->http()->get(self::BASE_URL."/recipes");
-                return $this->handleResponse($response);
-            });
-        }
-
-// ┌─────────────────────────────────────────────────────────────────────────────┐
-// │                        Search Item Recipes Endpoints                        │
-// └─────────────────────────────────────────────────────────────────────────────┘
-
-        public function getRecipeSearch(int $inputId = 0, int $outputId = 0)
-        {
-            return $this->execute(function() use($inputId, $outputId) {
-                $params = array_filter([
-                    'input' => $inputId > 0 ? $inputId : null,
-                    'output' => $outputId > 0 ? $outputId : null
-                ]);
-
-                if (!empty($params)) {
-                    $response = $this->http()->get(self::BASE_URL."/recipes/search", $params);
-                    return $this->handleResponse($response);
-                }
-
-                throw new Gw2ApiException('Error: No inputId or outputId informed on getRecipeSearch endpoint', 000);
-            });
-        }
-
-// ┌─────────────────────────────────────────────────────────────────────────────┐
-// │                               Skins Endpoints                               │
-// └─────────────────────────────────────────────────────────────────────────────┘
-
-        public function getSkin(int $id)
-        {
-            return $this->execute(function() use($id) {
-                $this->validateId($id);
-                $response = $this->http()->get(self::BASE_URL."/skins/{$id}");
-                return $this->handleResponse($response);
-            });
-        }
-
-        public function getAllSkins()
-        {
-            return $this->execute(function() {
-                $response = $this->http()->get(self::BASE_URL."/skins");
-                return $this->handleResponse($response);
-            });
-        }
-
-// ┌─────────────────────────────────────────────────────────────────────────────┐
-// │                             Auxiliar Functions                              │
-// └─────────────────────────────────────────────────────────────────────────────┘
-
-        protected function handleResponse($response) 
-        {
-            if ($response->failed()) {
-                throw new Gw2ApiException(
-                    'GW2 API Request failed: ' . $response->status(),
-                    $response->status()
-                );
-            }
-
-            return $response->json();
-        }
-
-        protected function http()
-        {
-            return Http::retry(3, 100);
-        }
-
-        protected function execute(callable $callback)
-        {
-            try {
-                return $callback();
-            } catch (Gw2ApiException $e) {
-                Log::error('GW2 API Exception (Items)', [
-                    'message' => $e->getMessage(),
-                    'code' => $e->getCode()
-                ]);
-                throw $e;
-            }
-        }
-
-        protected function validateIds(array $ids) {
-            if (empty($ids)) {
-                throw new Gw2ApiException('Error: No IDs provided for the request. The array sent is empty.', 000);
-            }
-
-            foreach ($ids as $id) {
-                if (!is_int($id)) {
-                    throw new Gw2ApiException("Error: The ID '{$id}' is not numeric. Sent array: " . json_encode($ids), 000);
-                }
-                if ($id <= 0) {
-                    throw new Gw2ApiException("Error: The ID '{$id}' must be greater than 0. Sent array: " . json_encode($ids), 000);
-                }
-            }
-        }
-
-        protected function validateId(int $id) {
-            if ($id <= 0) {
-                throw new Gw2ApiException("Error: The ID '{$id}' must be greater than 0.");
-            }
-        }
-
+        $this->validator = $validator;
+        $this->httpClient = $httpClient;
     }
+
+    public function getAllFinishers() 
+    {
+        return $this->httpClient->get(self::BASE_URL."/finisher");
+    }
+
+    public function getFinisher(int $id) 
+    {
+        $this->validator->validateId($id);
+        return $this->httpClient->get(self::BASE_URL."/finisher/{$id}");
+    }
+
+    public function getFinishers(array $ids)
+    {
+        $this->validator->validateIds($ids);
+        return $this->httpClient->get(self::BASE_URL."/finisher", [ "ids" => implode(',', $ids)]);
+    }
+
+    public function getItem(int $id)
+    {
+        $this->validator->validateId($id);
+        return $this->httpClient->get(self::BASE_URL."/items/{$id}");
+    }
+
+    public function getItems(array $ids)
+    {
+        $this->validator->validateIds($ids);
+        return $this->httpClient->get(self::BASE_URL."/items", [ "ids" => implode(',', $ids)]);
+    }
+
+    public function getAllItems()
+    {
+        return $this->httpClient->get(self::BASE_URL."/items");
+    }
+
+    public function getItemStats(int $id)
+    {   
+        $this->validator->validateId($id);
+        return $this->httpClient->get(self::BASE_URL."/itemstats/{$id}");
+    }
+
+    public function getItemsStats(array $ids)
+    {
+        $this->validator->validateIds($ids);
+        return $this->httpClient->get(self::BASE_URL."/itemstats", ["ids" => implode(',', $ids)]);
+    }
+
+    public function getAllItemStats()
+    {
+        return $this->httpClient->get(self::BASE_URL."/itemstats");
+    }
+
+    public function getMaterialCategory(int $id)
+    {
+        $this->validator->validateId($id);
+        return $this->httpClient->get(self::BASE_URL."/materials/{$id}");
+    }
+
+    public function getAllMaterialCategories()
+    {
+        return $this->httpClient->get(self::BASE_URL."/materials");
+    }
+
+    public function getPvpAmulet(int $id)
+    {
+        $this->validator->validateId($id);
+        return $this->httpClient->get(self::BASE_URL."/pvp/amulets/{$id}");
+    }
+
+    public function getAllPvpAmulets(int $page = 0, int $pageSize = 0)
+    {
+        $params = array_filter([
+            'page' => $page > 0 ? $page : null,
+            'page_size' => $pageSize > 0 ? $pageSize : null,
+        ]);
+
+        return $this->httpClient->get(self::BASE_URL."/pvp/amulets", $params);
+    }
+
+    public function getRecipe(int $id)
+    {
+        $this->validator->validateId($id);
+        return $this->httpClient->get(self::BASE_URL."/recipes/{$id}");
+    }
+
+    public function getAllRecipes()
+    {
+        return $this->httpClient->get(self::BASE_URL."/recipes");
+    }
+
+    public function getRecipeSearch(int $inputId = 0, int $outputId = 0)
+    {
+        $params = array_filter([
+            'input' => $inputId > 0 ? $inputId : null,
+            'output' => $outputId > 0 ? $outputId : null
+        ]);
+
+        if (!empty($params)) {
+            return $this->httpClient->get(self::BASE_URL."/recipes/search", $params);
+        }
+
+        throw new Gw2ApiException('Error: No inputId or outputId informed on getRecipeSearch endpoint', 000);
+    }
+
+    public function getSkin(int $id)
+    {
+        $this->validator->validateId($id);
+        return $this->httpClient->get(self::BASE_URL."/skins/{$id}");
+    }
+
+    public function getAllSkins()
+    {
+        return $this->httpClient->get(self::BASE_URL."/skins");
+    }
+
+}
