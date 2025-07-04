@@ -15,7 +15,7 @@
     class Gw2ItemService
     {
 
-        protected string $baseUrl = 'https://api.guildwars2.com/v2';
+        protected const BASE_URL = 'https://api.guildwars2.com/v2';
 
 // ┌─────────────────────────────────────────────────────────────────────────────┐
 // │                            Finishers Endpoints                              │
@@ -23,19 +23,19 @@
 
         public function getAllFinishers() 
         {
-            $response = $this->http()->get("{$this->baseUrl}/finisher");
+            $response = $this->http()->get(self::BASE_URL."/finisher");
             return $this->handleResponse($response);
         }
 
         public function getFinisher(int $id) 
         {
-            $response = $this->http()->get("{$this->baseUrl}/finisher/{$id}");
+            $response = $this->http()->get(self::BASE_URL."/finisher/{$id}");
             return $this->handleResponse($response);
         }
 
         public function getFinishers(array $ids)
         {
-            $response = $this->http()->get("{$this->baseUrl}/finisher", [ "ids" => implode(',', $ids)]);
+            $response = $this->http()->get(self::BASE_URL."/finisher", [ "ids" => implode(',', $ids)]);
             return $this->handleResponse($response);
         }
 
@@ -45,19 +45,19 @@
 
         public function getItem(int $id)
         {
-            $response = $this->http()->get("{$this->baseUrl}/items/{$id}");
+            $response = $this->http()->get(self::BASE_URL."/items/{$id}");
             return $this->handleResponse($response);
         }
 
         public function getItems(array $ids)
         {
-            $response = $this->http()->get("{$this->baseUrl}/items", [ "ids" => implode(',', $ids)]);
+            $response = $this->http()->get(self::BASE_URL."/items", [ "ids" => implode(',', $ids)]);
             return $this->handleResponse($response);
         }
 
         public function getAllItems()
         {
-            $response = $this->http()->get("{$this->baseUrl}/items");
+            $response = $this->http()->get(self::BASE_URL."/items");
             return $this->handleResponse($response);
         }
 
@@ -67,19 +67,19 @@
 
         public function getItemStats(int $id)
         {   
-            $response = $this->http()->get("{$this->baseUrl}/itemstats/{$id}");
+            $response = $this->http()->get(self::BASE_URL."/itemstats/{$id}");
             return $this->handleResponse($response);
         }
 
         public function getItemsStats(array $ids)
         {
-            $response = $this->http()->get("{$this->baseUrl}/itemstats", ["ids" => implode(',', $ids)]);
+            $response = $this->http()->get(self::BASE_URL."/itemstats", ["ids" => implode(',', $ids)]);
             return $this->handleResponse($response);
         }
 
         public function getAllItemStats()
         {
-            $response = $this->http()->get("{$this->baseUrl}/itemstats");
+            $response = $this->http()->get(self::BASE_URL."/itemstats");
             return $this->handleResponse($response);
         }
 
@@ -89,13 +89,13 @@
 
         public function getMaterialCategory(int $id)
         {
-            $response = $this->http()->get("{$this->baseUrl}/materials/{$id}");
+            $response = $this->http()->get(self::BASE_URL."/materials/{$id}");
             return $this->handleResponse($response);
         }
 
         public function getAllMaterialCategorys()
         {
-            $response = $this->http()->get("{$this->baseUrl}/materials");
+            $response = $this->http()->get(self::BASE_URL."/materials");
             return $this->handleResponse($response);
         }
 
@@ -105,7 +105,7 @@
 
         public function getPvpAmulet(int $id)
         {
-            $response = $this->http()->get("{$this->baseUrl}/pvp/amulets/{$id}");
+            $response = $this->http()->get(self::BASE_URL."/pvp/amulets/{$id}");
             return $this->handleResponse($response);
         }
 
@@ -116,7 +116,7 @@
                 'page_size' => $pageSize > 0 ? $pageSize : null,
             ]);
 
-            $response = $this->http()->get("{$this->baseUrl}/pvp/amulets", $params);
+            $response = $this->http()->get(self::BASE_URL."/pvp/amulets", $params);
             return $this->handleResponse($response);
         }
 
@@ -126,13 +126,13 @@
 
         public function getRecipe(int $id)
         {
-            $response = $this->http()->get("{$this->baseUrl}/recipes/{$id}");
+            $response = $this->http()->get(self::BASE_URL."/recipes/{$id}");
             return $this->handleResponse($response);
         }
 
         public function getAllRecipes()
         {
-            $response = $this->http()->get("{$this->baseUrl}/recipes");
+            $response = $this->http()->get(self::BASE_URL."/recipes");
             return $this->handleResponse($response);
         }
 
@@ -148,7 +148,7 @@
             ]);
 
             if (!empty($params)) {
-                $response = $this->http()->get("{$this->baseUrl}/recipes/search", $params);
+                $response = $this->http()->get(self::BASE_URL."/recipes/search", $params);
                 return $this->handleResponse($response);
             }
 
@@ -161,13 +161,13 @@
 
         public function getSkin(int $id)
         {
-            $response = $this->http()->get("{$this->baseUrl}/skins/{$id}");
+            $response = $this->http()->get(self::BASE_URL."/skins/{$id}");
             return $this->handleResponse($response);
         }
 
         public function getAllSkins()
         {
-            $response = $this->http()->get("{$this->baseUrl}/skins");
+            $response = $this->http()->get(self::BASE_URL."/skins");
             return $this->handleResponse($response);
         }
 
