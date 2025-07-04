@@ -26,8 +26,8 @@ class Gw2ItemService
     {
         $this->validator = $validator;
         $this->httpClient = $httpClient;
-        $this->cacheTimer = config('gw2.api_cache_time');
-        $this->url = config('gw2.api_base_url') . config('gw2.api_version');
+        $this->cacheTimer = config('gw2Api.api_cache_time');
+        $this->url = config('gw2Api.api_base_url') . config('gw2Api.api_version');
     }
 
     public function getAllFinishers() 
