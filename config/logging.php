@@ -127,6 +127,12 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
+        'gw2sync' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/gw2sync.log'),
+            'level' => 'debug',
+        ],
+
     ],
 
 ];
