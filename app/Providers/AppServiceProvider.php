@@ -11,9 +11,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(\App\Services\ArenaNetServices\Gw2Validator::class);
-        $this->app->singleton(\App\Services\ArenaNetServices\Gw2HttpClient::class);
-        $this->app->singleton(\App\Services\ArenaNetServices\Gw2ItemService::class);
+        //
     }
 
     /**

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Exceptions\Gw2ApiException;
 use App\Services\ArenaNetServices\Gw2Validator;
 use App\Services\ArenaNetServices\Gw2HttpClient;
+use App\Services\ArenaNetServices\Gw2HttpCaching;
 
 class Gw2ItemService
 {
@@ -20,12 +21,14 @@ class Gw2ItemService
     protected $cacheTimer;
     protected $validator;
     protected $httpClient;
+    protected $cachingHelper;
     protected $url;
 
-    public function __construct(Gw2Validator $validator, Gw2HttpClient $httpClient)
+    public function __construct(Gw2Validator $validator, Gw2HttpClient $httpClient, Gw2CachingHelper $cachingHelper)
     {
         $this->validator = $validator;
         $this->httpClient = $httpClient;
+        $this->cachingHelper = $cachingHelper;
         $this->cacheTimer = config('gw2Api.api_cache_time');
         $this->url = config('gw2Api.api_base_url') . config('gw2Api.api_version');
     }
@@ -62,7 +65,20 @@ class Gw2ItemService
     public function getItems(array $ids)
     {
         $this->validator->validateIds($ids);
-        return $this->httpClient->get($this->url."/items", [ "ids" => implode(',', $ids)]);
+
+        $cache = $this->cachingHelper->verifyItemsCached($ids);
+
+        if (empty($cache['uncachedIds'])) {
+            return $cache['cachedIds'];
+        }
+
+        $fetchedItems = $this->httpClient->get($this->url . "/items", ["ids" => implode(',', $cache['uncachedIds'])]);
+
+        foreach ($fetchedItems as $item) {
+            Cache::put("item_{$item['id']}", $item, $this->cacheTimer);
+        }
+
+        return array_merge($cache['cachedIds'], $fetchedItems);
     }
 
     public function getAllItems()
