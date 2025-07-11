@@ -13,6 +13,7 @@ class SyncData
 {
     public function syncItems($items)
     {
+        return true;
         $itemsData = [];
         $flagsData = [];
         $gameTypesData = [];

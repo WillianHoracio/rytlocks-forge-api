@@ -2,7 +2,7 @@
 
 namespace App\Services\ArenaNetIntegrator\Items;
 
-use App\Services\ArenaNetServices\Gw2ItemService;
+use App\Services\ArenaNetServices\ItemService;
 use App\Services\ArenaNetIntegrator\Items\SyncLoggingHelper;
 
 
@@ -17,7 +17,7 @@ class SyncService
     protected int $totalChunks;
     protected int $progress;
 
-    public function __construct(Gw2ItemService $itemService, SyncLoggingHelper $logging, SyncData $syncData)
+    public function __construct(ItemService $itemService, SyncLoggingHelper $logging, SyncData $syncData)
     {
         $this->logging = $logging;
         $this->syncData = $syncData;
