@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\GameItems;
 
 use Illuminate\Database\Eloquent\Model;
 
-class GameItemInfusionSlot extends Model
+class ItemRestriction extends Model
 {
     protected $fillable = [
         'item_id',
-        'flag'
+        'restriction',
     ];
     protected $connection = 'game-pgsql';
 
     public function item()
     {
-        return $this->belongsTo(GameItem::class);
+        return $this->belongsTo(Item::class);
     }
 
 }

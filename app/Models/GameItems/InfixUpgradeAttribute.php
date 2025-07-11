@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\GameItems;
 
 use Illuminate\Database\Eloquent\Model;
 
-class GameItemAttribute extends Model
+class InfixUpgradeAttribute extends Model
 {
     protected $fillable = [
         'attribute',
@@ -15,6 +15,6 @@ class GameItemAttribute extends Model
 
     public function infix()
     {
-        return $this->belongsTo(GameItemInfixUpgrade::class);
+        return $this->belongsTo(InfixUpgrade::class);
     }
 }

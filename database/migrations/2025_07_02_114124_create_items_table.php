@@ -17,7 +17,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('game_items', function (Blueprint $table) {
+        Schema::create('items', function (Blueprint $table) {
             $table->bigInteger('id')->primary();
             $table->string('name');
             $table->text('description')->nullable();
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('game_items');
+        Schema::dropIfExists('items');
     }
 };

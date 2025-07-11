@@ -6,21 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-
     public function getConnection()
     {
         return 'game-pgsql';
     }
+
     /**
      * Run the migrations.
      */
     public function up()
     {
-        Schema::create('game_item_flags', function (Blueprint $table) {
+        Schema::create('item_restrictions', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('item_id');
-            $table->string('flag');
-            $table->foreign('item_id')->references('id')->on('game_items')->onDelete('cascade');
+            $table->string('restriction');
+            $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
         });
     }
 
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('game_item_flags');
+        Schema::dropIfExists('item_restrictions');
     }
 };

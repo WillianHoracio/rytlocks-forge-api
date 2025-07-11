@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\GameItems;
 
 use Illuminate\Database\Eloquent\Model;
 
-class GameItem extends Model
+class Item extends Model
 {
     protected $fillable = [
         'id',
@@ -21,27 +21,27 @@ class GameItem extends Model
 
     public function flags()
     {
-        return $this->hasMany(GameItemFlag::class);
+        return $this->hasMany(ItemFlag::class);
     }
 
     public function gameTypes()
     {
-        return $this->hasMany(GameItemGameType::class);
+        return $this->hasMany(ItemGameType::class);
     }
 
     public function restrictions()
     {
-        return $this->hasMany(GameItemRestriction::class);
+        return $this->hasMany(ItemRestriction::class);
     }
 
     public function armorDetail()
     {
-        return $this->hasOne(GameItemArmorDetail::class, 'item_id');
+        return $this->hasOne(ItemArmorDetail::class, 'item_id');
     }
 
     public function infusionSlots()
     {
-        return $this->hasMany(GameItemInfusionSlot::class, 'item_id');
+        return $this->hasMany(ItemInfusionSlot::class, 'item_id');
     }
 
 }

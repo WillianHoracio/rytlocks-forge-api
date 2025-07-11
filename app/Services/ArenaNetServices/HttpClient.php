@@ -5,7 +5,7 @@ use App\Exceptions\Gw2ApiException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class Gw2HttpClient
+class HttpClient
 {
     public function get(string $url, array $params = [])
     {

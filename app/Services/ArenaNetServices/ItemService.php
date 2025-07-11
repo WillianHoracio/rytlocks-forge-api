@@ -11,11 +11,11 @@ namespace App\Services\ArenaNetServices;
 
 use Illuminate\Support\Facades\Cache;
 use App\Exceptions\Gw2ApiException;
-use App\Services\ArenaNetServices\Gw2Validator;
-use App\Services\ArenaNetServices\Gw2HttpClient;
-use App\Services\ArenaNetServices\Gw2HttpCaching;
+use App\Services\ArenaNetServices\Validator;
+use App\Services\ArenaNetServices\HttpClient;
+use App\Services\ArenaNetServices\CachingHelper;
 
-class Gw2ItemService
+class ItemService
 {
 
     protected $cacheTimer;
@@ -24,7 +24,7 @@ class Gw2ItemService
     protected $cachingHelper;
     protected $url;
 
-    public function __construct(Gw2Validator $validator, Gw2HttpClient $httpClient, Gw2CachingHelper $cachingHelper)
+    public function __construct(Validator $validator, HttpClient $httpClient, CachingHelper $cachingHelper)
     {
         $this->validator = $validator;
         $this->httpClient = $httpClient;

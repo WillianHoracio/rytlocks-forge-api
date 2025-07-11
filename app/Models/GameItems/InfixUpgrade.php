@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\GameItems;
 
 use Illuminate\Database\Eloquent\Model;
 
-class GameItemInfixUpgrade extends Model
+class InfixUpgrade extends Model
 {
     protected $connection = 'game-pgsql';
     protected $fillable = [
@@ -14,10 +14,10 @@ class GameItemInfixUpgrade extends Model
     ];
 
     public function attributes() {
-        return $this->hasMany(GameItemAttribute::class);
+        return $this->hasMany(InfixUpgradeAttribute::class);
     }
 
     public function armorDetail() {
-        return $this->hasMany(GameItemArmorDetail::class, 'infix_id');
+        return $this->hasMany(ItemArmorDetail::class, 'infix_id');
     }
 }

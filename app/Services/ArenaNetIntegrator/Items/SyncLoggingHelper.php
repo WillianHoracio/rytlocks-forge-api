@@ -1,9 +1,9 @@
 <?php
-namespace App\Services\ArenaNetIntegrator;
+namespace App\Services\ArenaNetIntegrator\Items;
 
 use Illuminate\Support\Facades\Log;
 
-class Gw2ItemSyncLogging
+class SyncLoggingHelper
 {
     public function writeInfo(string $message, array $context = []) {
         Log::channel('gw2sync')->info($message, $context);

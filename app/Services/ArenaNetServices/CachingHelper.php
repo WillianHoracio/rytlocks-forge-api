@@ -3,7 +3,7 @@ namespace App\Services\ArenaNetServices;
 
 use Illuminate\Support\Facades\Cache;
 
-class Gw2CachingHelper
+class CachingHelper
 {
 
     public function verifyItemsCached(array $ids)

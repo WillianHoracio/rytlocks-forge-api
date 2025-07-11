@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\GameItems;
 
 use Illuminate\Database\Eloquent\Model;
 
-class GameItemGameType extends Model
+class ItemFlag extends Model
 {
     protected $fillable = [
         'item_id',
-        'game_type',
+        'flag',
     ];
     protected $connection = 'game-pgsql';
 
     public function item()
     {
-        return $this->belongsTo(GameItem::class);
+        return $this->belongsTo(Item::class);
     }
 
 }

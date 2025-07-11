@@ -1,9 +1,9 @@
 <?php
-namespace App\Models;
+namespace App\Models\GameItems;
 
 use Illuminate\Database\Eloquent\Model;
 
-class GameItemArmorDetail extends Model
+class ItemArmorDetail extends Model
 {
     protected $table = 'game_item_armor_details';
     protected $connection = 'game-pgsql';
@@ -21,10 +21,10 @@ class GameItemArmorDetail extends Model
 
     public function gameItem()
     {
-        return $this->belongsTo(GameItem::class, 'item_id');
+        return $this->belongsTo(Item::class, 'item_id');
     }
 
     public function infix() {
-        return $this->belongsTo(GameItemInfixUpgrade::class, 'infix_id');
+        return $this->belongsTo(InfixUpgrade::class, 'infix_id');
     }
 }

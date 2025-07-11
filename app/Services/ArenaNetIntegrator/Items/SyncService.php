@@ -1,20 +1,12 @@
 <?php
 
-namespace App\Services\ArenaNetIntegrator;
-
-use App\Models\{
-    GameDetail,
-    GameItem,
-    GameItemFlag,
-    GameItemGameType,
-    GameItemRestriciton
-};
+namespace App\Services\ArenaNetIntegrator\Items;
 
 use App\Services\ArenaNetServices\Gw2ItemService;
-use App\Services\ArenaNetIntegrator\Gw2ItemSyncLogging;
+use App\Services\ArenaNetIntegrator\Items\SyncLoggingHelper;
 
 
-class Gw2ItemSyncService
+class SyncService
 {
 
     protected $itemService;
@@ -25,7 +17,7 @@ class Gw2ItemSyncService
     protected int $totalChunks;
     protected int $progress;
 
-    public function __construct(Gw2ItemService $itemService, Gw2ItemSyncLogging $logging, Gw2ItemSyncData $syncData)
+    public function __construct(Gw2ItemService $itemService, SyncLoggingHelper $logging, SyncData $syncData)
     {
         $this->logging = $logging;
         $this->syncData = $syncData;
@@ -72,7 +64,7 @@ class Gw2ItemSyncService
     protected function processItemRelationshipData(array $itemsData)
     {
         
-        $this->syncData->store($itemsData);
+        $this->syncData->syncItems($itemsData);
         //echo(print_r($itemsData));   
         //Aqui serão baixados os relacionamtos dos itens, como gametypes (preecher tabela pivot), flag, restrictons, status, coisas que precisam de mais consultas de endpoint
         //Depois aplicarei o solid, removendo daqui metodos que dão mais de uma responsabilidade para esta classe, e injetando aqui

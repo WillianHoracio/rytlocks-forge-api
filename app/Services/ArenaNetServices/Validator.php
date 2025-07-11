@@ -3,7 +3,7 @@ namespace App\Services\ArenaNetServices;
 
 use App\Exceptions\Gw2ApiException;
 
-class Gw2Validator
+class Validator
 {
     public function validateIds(array $ids) {
         if (empty($ids)) {

@@ -15,19 +15,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('game_item_armor_details', function (Blueprint $table) {
+        Schema::create('item_armor_details', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('item_id');
+            $table->unsignedBigInteger('infix_id');
             $table->string('type');
             $table->string('weight_class');
             $table->integer('defense');
             $table->float('atribute_adjustment');
             $table->integer('suffix_item_id');
             $table->string('secondary_suffix_item_id');
-            $table->unsignedBigInteger('item_id');
-            $table->unsignedBigInteger('infix_id');
 
-            $table->foreign('item_id')->references('id')->on('game_items')->cascadeOnDelete();
-            $table->foreign('infix_id')->references('id')->on('game_item_infix_upgrades')->cascadeOnDelete();
+            $table->foreign('item_id')->references('id')->on('items')->cascadeOnDelete();
+            $table->foreign('infix_id')->references('id')->on('infix_upgrades')->cascadeOnDelete();
         });
     }
 
@@ -36,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('game_item_armor_details');
+        Schema::dropIfExists('item_armor_details');
     }
 };
