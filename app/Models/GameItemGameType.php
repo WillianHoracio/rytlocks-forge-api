@@ -10,6 +10,7 @@ class GameItemGameType extends Model
         'item_id',
         'game_type',
     ];
+    protected $connection = 'game-pgsql';
 
     public function item()
     {

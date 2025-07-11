@@ -4,15 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class GameItemDetail extends Model
+class GameItemInfusionSlot extends Model
 {
     protected $fillable = [
         'item_id',
-        'details_json',
+        'flag'
     ];
+    protected $connection = 'game-pgsql';
 
     public function item()
     {
         return $this->belongsTo(GameItem::class);
     }
+
 }

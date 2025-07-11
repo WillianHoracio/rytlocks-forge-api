@@ -27,7 +27,6 @@ return new class extends Migration
             $table->integer('default_skin')->nullable();
             $table->integer('level')->nullable();
             $table->string('icon')->nullable();
-            $table->timestamps();
         });
     }
 

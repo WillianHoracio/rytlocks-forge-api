@@ -10,6 +10,7 @@ class GameItemFlag extends Model
         'item_id',
         'flag',
     ];
+    protected $connection = 'game-pgsql';
 
     public function item()
     {

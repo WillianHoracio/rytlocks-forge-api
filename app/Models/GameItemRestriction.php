@@ -10,6 +10,7 @@ class GameItemRestriction extends Model
         'item_id',
         'restriction',
     ];
+    protected $connection = 'game-pgsql';
 
     public function item()
     {

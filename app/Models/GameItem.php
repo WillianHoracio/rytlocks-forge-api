@@ -17,6 +17,7 @@ class GameItem extends Model
         'level',
         'icon',
     ];
+    protected $connection = 'game-pgsql';
 
     public function flags()
     {
@@ -33,9 +34,14 @@ class GameItem extends Model
         return $this->hasMany(GameItemRestriction::class);
     }
 
-    public function detail()
+    public function armorDetail()
     {
-        return $this->hasOne(GameItemDetail::class);
+        return $this->hasOne(GameItemArmorDetail::class, 'item_id');
+    }
+
+    public function infusionSlots()
+    {
+        return $this->hasMany(GameItemInfusionSlot::class, 'item_id');
     }
 
 }
