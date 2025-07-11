@@ -36,7 +36,7 @@ class SyncLoggingHelper
 
     public function writeItem(string $message)
     {
-        $formatted = "  -> [{$message}]";
+        $formatted = "  -> Item [{$message}] downloaded ";
         $this->writeInfo($formatted);
     }
 
