@@ -4,6 +4,8 @@
 
 Backend Laravel 11 to track legendary weapon progress in Guild Wars 2.
 
+In the future it will be a complete companion for the game's mechanics and objectives.
+
 ---
 
 ## 🗺️ Roadmap
