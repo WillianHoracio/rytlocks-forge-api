@@ -3,37 +3,35 @@
 namespace App\Services\ArenaNetIntegrator\Items;
 
 use App\Services\ArenaNetServices\ItemService;
-use App\Services\ArenaNetIntegrator\Items\SyncLoggingHelper;
-
+use App\Services\ArenaNetIntegrator\Items\SyncLoggerHelper;
 
 class SyncService
 {
+    protected ItemService $itemService;
+    protected SyncLoggerHelper $logger;
+    protected SyncData $syncData;
+    protected array $itemIdsChunks = [];
+    protected array $itemsIdsWithErrors = [];
+    protected int   $totalChunks = 0;
+    protected int   $progress = 0;
 
-    protected $itemService;
-    protected $logging;
-    protected $syncData;
-    protected array $itemIdsChunks;
-    protected array $itemsIdsWithErrors;
-    protected int $totalChunks;
-    protected int $progress;
-
-    public function __construct(ItemService $itemService, SyncLoggingHelper $logging, SyncData $syncData)
+    public function __construct(ItemService $itemService, SyncLoggerHelper $logger, SyncData $syncData)
     {
-        $this->logging = $logging;
+        $this->logger = $logger;
         $this->syncData = $syncData;
         $this->itemService = $itemService;
     }
 
-    public function sync() 
+    public function syncItems() 
     {   
-        $this->logging->writeHeader("STARTING ITEM SYNCHRONIZATION");
+        $this->logger->startingSync();
         $ids = $this->itemService->getAllItems();
 
         if (count($ids) > 0) {
             $chunks = $this->prepareChunks($ids);
             $this->processChunks($chunks);
         } else {
-            $this->logging->writeHeader("SYNCHRONIZATION COMPLETED. NO ITEMS WERE RETURNED FROM THE GAME SERVER!");
+            $this->logger->noItemsToSync();
         }
     }
 
@@ -41,7 +39,7 @@ class SyncService
     {
         $chunks = array_chunk($ids, 200);
         $this->totalChunks = count($chunks);
-        $this->logging->writeInfo(count($chunks)." chunks prepared. Starting download...");
+        $this->logger->chunksPrepared(count($chunks));
         return $chunks;
     }
 
@@ -50,12 +48,12 @@ class SyncService
         $this->progress = 0;
         foreach ($chunks as $chunk) {
             $this->progress++;
-            $this->logging->writeSubHeader("Starting Chunk {$this->progress} of {$this->totalChunks}");
+            $this->logger->startingChunk($this->progress, $this->totalChunks);
             
             $itemsData = $this->itemService->getItems($chunk);
 
             foreach ($chunk as $item) {
-                $this->logging->writeItem($item);
+                $this->logger->item($item);
             }
 
             if($itemsData) {
@@ -71,5 +69,4 @@ class SyncService
         //echo(print_r($itemsData));   
 
     }
-
 }

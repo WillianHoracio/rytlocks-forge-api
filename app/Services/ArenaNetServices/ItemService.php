@@ -17,12 +17,11 @@ use App\Services\ArenaNetServices\CachingHelper;
 
 class ItemService
 {
-
-    protected $cacheTimer;
-    protected $validator;
-    protected $httpClient;
-    protected $cachingHelper;
-    protected $url;
+    protected Validator $validator;
+    protected HttpClient $httpClient;
+    protected CachingHelper $cachingHelper;
+    protected string $url = '';
+    protected int    $cacheTimer = 0;
 
     public function __construct(Validator $validator, HttpClient $httpClient, CachingHelper $cachingHelper)
     {
@@ -173,5 +172,4 @@ class ItemService
             return $this->httpClient->get($this->url."/skins");
         });
     }
-
 }

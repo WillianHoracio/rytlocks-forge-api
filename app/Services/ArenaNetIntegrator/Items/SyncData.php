@@ -8,38 +8,23 @@ use App\Models\GameItems\{
     ItemRestriction
 };
 
-use App\Services\ArenaNetIntegrator\Items;
-
 class SyncData
 {
-    protected $dataMapper;
+    protected DataMapper $dataMapper;
 
     public function __construct(DataMapper $dataMapper)
     {
         $this->dataMapper = $dataMapper;
     }
 
-    public function syncItems($items)
+    public function syncItems(array $items)
     {
-        return true;
-        $itemsData = [];
-        $flagsData = [];
-        $gameTypesData = [];
-        $restrictionsData = [];
+        $data = $this->dataMapper->mapAll($items);
 
-        foreach ($items as $item) {
-            $itemId = $item['id'];
-
-            $itemsData[]      = $this->dataMapper->mapItemData($item);
-            $flagsData        = array_merge($flagsData,        $this->dataMapper->mapFlagData($itemId, $item['flags']));
-            $gameTypesData    = array_merge($gameTypesData,    $this->dataMapper->mapGameTypeData($itemId, $item['game_type']));
-            $restrictionsData = array_merge($restrictionsData, $this->dataMapper->mapRestrictionData($itemId, $item['restriction']));
-        }
-
-        $this->persistItems($itemsData);
-        $this->persistFlags($flagsData);
-        $this->persistRestrictions($restrictionsData);
-        $this->persistGameTypes($gameTypesData);
+        $this->persistItems($data['items']);
+        $this->persistFlags($data['flags']);
+        $this->persistGameTypes($data['gameTypes']);
+        $this->persistRestrictions($data['restrictions']);
     }
 
     protected function persistItems(array $items)

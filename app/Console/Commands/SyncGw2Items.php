@@ -26,8 +26,8 @@ class SyncGw2Items extends Command
      */
     public function handle(SyncService $service)
     {
-        $retorno = $service->sync();
+        $retorno = $service->syncItems();
         $this->info(print_r($retorno, true));
-        return $service->sync();
+        return $service->syncItems();
     }
 }

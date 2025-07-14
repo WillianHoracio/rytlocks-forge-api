@@ -3,8 +3,31 @@ namespace App\Services\ArenaNetIntegrator\Items;
 
 class DataMapper
 {
+    public function mapAll(array $items) : array 
+    {
+        $itemsData = [];
+        $flagsData = [];
+        $gameTypesData = [];
+        $restrictionsData = [];
 
-    public function mapItemData($item)
+        foreach ($items as $item) {
+            $itemId = $item['id'];
+
+            $itemsData[]      = $this->mapItemData($item);
+            $flagsData        = array_merge($flagsData,        $this->mapFlagData($itemId, $item['flags']));
+            $gameTypesData    = array_merge($gameTypesData,    $this->mapGameTypeData($itemId, $item['game_type']));
+            $restrictionsData = array_merge($restrictionsData, $this->mapRestrictionData($itemId, $item['restriction']));
+        }
+
+        return [
+            'items'        => $itemsData,
+            'flags'        => $flagsData,
+            'gameTypes'    => $gameTypesData,
+            'restrictions' => $restrictionsData
+        ];
+    }
+
+    public function mapItemData(array $item) : array
     {
         return [
             'id' => $item['id'],
@@ -19,9 +42,10 @@ class DataMapper
         ];
     }
 
-    public function mapGameTypeData($itemId, $gameTypes)
+    public function mapGameTypeData(int $itemId, ?array $gameTypes) : array
     {
         $data = [];
+        if (!$gameTypes) return $data;
         foreach ($gameTypes as $gameType) {
             $data[] = [
                 'item_id' => $itemId,
@@ -31,9 +55,10 @@ class DataMapper
         return $data;
     }
 
-    public function mapFlagData($itemId, $flags)
+    public function mapFlagData(int $itemId, ?array $flags) : array
     {
         $data = [];
+        if (!$flags) return $data;
         foreach ($flags as $flag) {
             $data[] = [
                 'item_id' => $itemId,
@@ -43,9 +68,10 @@ class DataMapper
         return $data;
     }
 
-    public function mapRestrictionData($itemId, $restrictions)
+    public function mapRestrictionData(int $itemId, ?array $restrictions) : array
     {
         $data = [];
+        if (!$restrictions) return $data;
         foreach ($restrictions as $restriction) {
             $data[] = [
                 'item_id' => $itemId,

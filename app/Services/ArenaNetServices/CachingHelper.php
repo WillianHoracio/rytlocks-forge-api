@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Cache;
 
 class CachingHelper
 {
-
     public function verifyItemsCached(array $ids)
     {
         $keys = array_map(fn($id) => "item_{$id}", $ids);
@@ -28,5 +27,4 @@ class CachingHelper
             'uncachedIds' => $missingIds,
         ];
     }
-
 }
