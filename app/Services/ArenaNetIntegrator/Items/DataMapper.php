@@ -1,14 +1,16 @@
 <?php
 namespace App\Services\ArenaNetIntegrator\Items;
 
+use App\Models\SyncRecord;
 class DataMapper
 {
-    public function mapAll(array $items) : array 
+    public function mapAll(array $items, array $chunk) : array 
     {
         $itemsData = [];
         $flagsData = [];
         $gameTypesData = [];
         $restrictionsData = [];
+        $chunkData = [];
 
         foreach ($items as $item) {
             $itemId = $item['id'];
@@ -18,12 +20,14 @@ class DataMapper
             $gameTypesData    = array_merge($gameTypesData,    $this->mapGameTypeData($itemId, $item['game_types']));
             $restrictionsData = array_merge($restrictionsData, $this->mapRestrictionData($itemId, $item['restrictions']));
         }
+        $chunkData = $this->mapSyncData($chunk);
 
         return [
             'items'        => $itemsData,
             'flags'        => $flagsData,
             'gameTypes'    => $gameTypesData,
-            'restrictions' => $restrictionsData
+            'restrictions' => $restrictionsData,
+            'chunk'        => $chunkData,
         ];
     }
 
@@ -40,6 +44,22 @@ class DataMapper
             'level'        => $item['level'],
             'icon'         => $item['icon']
         ];
+    }
+
+    public function mapSyncData(array $chunk)
+    {
+        $data = [];
+        $now = date('Y-m-d H:i:s');
+        foreach ($chunk as $item) {
+            $data[] = [
+                'id' => $item,
+                'type' => SyncRecord::ITEM,
+                'is_synced' => true,
+                'created_at' => $now,
+                'updated_at' => $now
+            ];
+        }
+        return $data;
     }
 
     public function mapGameTypeData(int $itemId, ?array $gameTypes) : array

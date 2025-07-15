@@ -11,13 +11,11 @@ use App\Models\SyncRecord;
 class SyncService
 {
     protected SyncResolver $syncResolver;
-    protected ItemService $itemService;
     protected SyncLoggerHelper $logger;
+    protected ItemService $itemService;
     protected SyncData $syncData;
-    protected array $successfulChunks = [];
-    protected array $failedChunks = [];
-    protected int   $totalChunks = 0;
-    protected int   $progress = 0;
+    protected int $totalChunks = 0;
+    protected int $progress = 0;
 
     public function __construct(ItemService $itemService, SyncLoggerHelper $logger, SyncData $syncData, SyncResolver $syncResolver)
     {
@@ -61,25 +59,23 @@ class SyncService
             $items = $this->itemService->getItems($chunk);
 
             //Tries to sync the chunk items. Returns true if successful.
-            if ($this->trySyncItems($items, 3)) {
+            if ($this->trySyncItems($items, 3, $chunk)) {
                 foreach ($chunk as $item) {
                     $this->logger->item($item);
                 }
-                $this->successfulChunks[] = $chunk;
             } else {
-                $this->failedChunks[] = $chunk;
                 $this->logger->chunkFatalError();
             };
         }
     }
 
-    protected function trySyncItems(array $data, int $maxAttempts) : bool
+    protected function trySyncItems(array $data, int $maxAttempts, array $chunk) : bool
     {
         if($data) {
             $attempts = 0;
             while($attempts < $maxAttempts) {
                 try{
-                    $this->syncData->syncItems($data);
+                    $this->syncData->syncItems($data, $chunk);
                     return true;
                 } catch(\Exception $e) {
                     $attempts++;
