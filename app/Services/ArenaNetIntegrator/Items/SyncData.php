@@ -24,7 +24,7 @@ class SyncData
         $this->persistItems($data['items']);
         $this->persistFlags($data['flags']);
         $this->persistGameTypes($data['gameTypes']);
-        $this->persistRestrictions($data['restrictions']);
+        $this->persistRestrictions($data['restrictions']);    
     }
 
     protected function persistItems(array $items)

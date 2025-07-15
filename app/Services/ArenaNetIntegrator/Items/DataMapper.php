@@ -12,11 +12,11 @@ class DataMapper
 
         foreach ($items as $item) {
             $itemId = $item['id'];
-
+            
             $itemsData[]      = $this->mapItemData($item);
             $flagsData        = array_merge($flagsData,        $this->mapFlagData($itemId, $item['flags']));
-            $gameTypesData    = array_merge($gameTypesData,    $this->mapGameTypeData($itemId, $item['game_type']));
-            $restrictionsData = array_merge($restrictionsData, $this->mapRestrictionData($itemId, $item['restriction']));
+            $gameTypesData    = array_merge($gameTypesData,    $this->mapGameTypeData($itemId, $item['game_types']));
+            $restrictionsData = array_merge($restrictionsData, $this->mapRestrictionData($itemId, $item['restrictions']));
         }
 
         return [

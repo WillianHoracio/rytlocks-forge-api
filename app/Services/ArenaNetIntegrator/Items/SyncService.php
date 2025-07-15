@@ -57,16 +57,8 @@ class SyncService
             }
 
             if($itemsData) {
-                $this->storeItems($itemsData);
+                $this->syncData->syncItems($itemsData);
             }
         }
-    }
-
-    protected function storeItems(array $itemsData)
-    {
-        
-        $this->syncData->syncItems($itemsData);
-        //echo(print_r($itemsData));   
-
     }
 }
