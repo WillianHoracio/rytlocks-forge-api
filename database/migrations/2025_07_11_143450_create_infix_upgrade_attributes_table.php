@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-
     public function getConnection()
     {
         return 'game-pgsql';
@@ -15,13 +14,14 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('game_item_details', function (Blueprint $table) {
+        Schema::create('infix_upgrade_attributes', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('item_id')->unique();
-            $table->json('details_json')->nullable();
-            $table->foreign('item_id')->references('id')->on('game_items')->onDelete('cascade');
+            $table->unsignedBigInteger('infix_id');
+            $table->string('attribute');
+            $table->integer('modifier');
+            $table->foreign('infix_id')->references('id')->on('infix_upgrades')->cascadeOnDelete();
         });
     }
 
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('game_item_details');
+        Schema::dropIfExists('infix_upgrade_attributes');
     }
 };

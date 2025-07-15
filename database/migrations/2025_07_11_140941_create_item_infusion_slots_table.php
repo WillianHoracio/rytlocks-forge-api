@@ -10,17 +10,16 @@ return new class extends Migration
     {
         return 'game-pgsql';
     }
-
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('game_item_restrictions', function (Blueprint $table) {
+        Schema::create('item_infusion_slots', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('item_id');
-            $table->string('restriction');
-            $table->foreign('item_id')->references('id')->on('game_items')->onDelete('cascade');
+            $table->unsignedBigInteger('item_id');
+            $table->string('flag');
+            $table->foreign('item_id')->references('id')->on('items')->cascadeOnDelete();
         });
     }
 
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('game_item_restrictions');
+        Schema::dropIfExists('item_infusion_slots');
     }
 };

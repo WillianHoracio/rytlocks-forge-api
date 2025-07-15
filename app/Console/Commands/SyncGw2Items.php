@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Services\ArenaNetIntegrator\Gw2ItemSyncService;
+use App\Services\ArenaNetIntegrator\Items\SyncService;
 
 class SyncGw2Items extends Command
 {
@@ -24,10 +24,10 @@ class SyncGw2Items extends Command
     /**
      * Execute the console command.
      */
-    public function handle(Gw2ItemSyncService $service)
+    public function handle(SyncService $service)
     {
-        $retorno = $service->sync();
+        $retorno = $service->syncItems();
         $this->info(print_r($retorno, true));
-        return $service->sync();
+        return $service->syncItems();
     }
 }

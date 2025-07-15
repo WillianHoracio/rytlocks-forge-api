@@ -11,21 +11,23 @@ namespace App\Services\ArenaNetServices;
 
 use Illuminate\Support\Facades\Cache;
 use App\Exceptions\Gw2ApiException;
-use App\Services\ArenaNetServices\Gw2Validator;
-use App\Services\ArenaNetServices\Gw2HttpClient;
+use App\Services\ArenaNetServices\Validator;
+use App\Services\ArenaNetServices\HttpClient;
+use App\Services\ArenaNetServices\CachingHelper;
 
-class Gw2ItemService
+class ItemService
 {
+    protected Validator $validator;
+    protected HttpClient $httpClient;
+    protected CachingHelper $cachingHelper;
+    protected string $url = '';
+    protected int    $cacheTimer = 0;
 
-    protected $cacheTimer;
-    protected $validator;
-    protected $httpClient;
-    protected $url;
-
-    public function __construct(Gw2Validator $validator, Gw2HttpClient $httpClient)
+    public function __construct(Validator $validator, HttpClient $httpClient, CachingHelper $cachingHelper)
     {
         $this->validator = $validator;
         $this->httpClient = $httpClient;
+        $this->cachingHelper = $cachingHelper;
         $this->cacheTimer = config('gw2Api.api_cache_time');
         $this->url = config('gw2Api.api_base_url') . config('gw2Api.api_version');
     }
@@ -62,7 +64,20 @@ class Gw2ItemService
     public function getItems(array $ids)
     {
         $this->validator->validateIds($ids);
-        return $this->httpClient->get($this->url."/items", [ "ids" => implode(',', $ids)]);
+
+        $cache = $this->cachingHelper->verifyItemsCached($ids);
+
+        if (empty($cache['uncachedIds'])) {
+            return $cache['cachedIds'];
+        }
+
+        $fetchedItems = $this->httpClient->get($this->url . "/items", ["ids" => implode(',', $cache['uncachedIds'])]);
+
+        foreach ($fetchedItems as $item) {
+            Cache::put("item_{$item['id']}", $item, $this->cacheTimer);
+        }
+
+        return array_merge($cache['cachedIds'], $fetchedItems);
     }
 
     public function getAllItems()
@@ -157,5 +172,4 @@ class Gw2ItemService
             return $this->httpClient->get($this->url."/skins");
         });
     }
-
 }

@@ -6,21 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-
     public function getConnection()
     {
         return 'game-pgsql';
     }
+
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('game_item_flags', function (Blueprint $table) {
-            $table->id();
-            $table->bigInteger('item_id');
-            $table->string('flag');
-            $table->foreign('item_id')->references('id')->on('game_items')->onDelete('cascade');
+        Schema::create('sync_records', function (Blueprint $table) {
+            $table->unsignedBigInteger('id');
+            $table->string('type');
+            $table->boolean('is_synced')->default(true);
+            $table->timestamps();
+
+            $table->primary(['id', 'type']);
         });
     }
 
@@ -29,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('game_item_flags');
+        Schema::dropIfExists('sync_records');
     }
 };
