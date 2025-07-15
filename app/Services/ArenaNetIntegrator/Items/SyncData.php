@@ -1,6 +1,7 @@
 <?php
 namespace App\Services\ArenaNetIntegrator\Items;
 
+use Illuminate\Support\Facades\DB;
 use App\Models\GameItems\{
     Item,
     ItemFlag,
@@ -21,37 +22,39 @@ class SyncData
     {
         $data = $this->dataMapper->mapAll($items);
 
-        $this->persistItems($data['items']);
-        $this->persistFlags($data['flags']);
-        $this->persistGameTypes($data['gameTypes']);
-        $this->persistRestrictions($data['restrictions']);    
+        DB::connection('game-pgsql')->transaction(function () use ($data) {
+            $this->persistItems($data['items']);
+            $this->persistFlags($data['flags']);
+            $this->persistGameTypes($data['gameTypes']);
+            $this->persistRestrictions($data['restrictions']);    
+        });
     }
 
     protected function persistItems(array $items)
     {
         if (!empty($items)) {
-            Item::insertOrIgnore($items);
+            Item::insert($items);
         }
     }
 
     protected function persistFlags(array $flags)
     {
         if (!empty($flags)) {
-            ItemFlag::insertOrIgnore($flags);
+            ItemFlag::insert($flags);
         }
     }
 
     protected function persistRestrictions(array $restrictions)
     {
         if (!empty($restrictions)) {
-            ItemRestriction::insertOrIgnore($restrictions);
+            ItemRestriction::insert($restrictions);
         }
     }
 
     protected function persistGameTypes(array $gameTypes)
     {
         if (!empty($gameTypes)) {
-            ItemGameType::insertOrIgnore($gameTypes);
+            ItemGameType::insert($gameTypes);
         }
     }
 }

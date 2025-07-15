@@ -59,4 +59,15 @@ class SyncLoggerHelper
     {
         $this->info($chunks . " chunks prepared. Starting download...");
     }
+
+    public function chunkTryError(int $attempts, string $message)
+    {
+        $this->error("Error syncing chunk on attempt {$attempts}: {$message}");
+    }
+
+    public function chunkFatalError()
+    {
+        $this->error("Failed to sync chunk after all attempts.");
+    }
+
 }

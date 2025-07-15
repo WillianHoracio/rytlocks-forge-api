@@ -30,15 +30,15 @@ class DataMapper
     public function mapItemData(array $item) : array
     {
         return [
-            'id' => $item['id'],
-            'name' => $item['name'],
-            'description' => $item['description'] ?? null,
-            'type' => $item['type'],
-            'rarity' => $item['rarity'],
+            'id'           => $item['id'],
+            'name'         => $item['name'],
+            'description'  => $item['description'] ?? null,
+            'type'         => $item['type'],
+            'rarity'       => $item['rarity'],
             'vendor_value' => $item['vendor_value'],
             'default_skin' => $item['default_skin'] ?? null,
-            'level' => $item['level'],
-            'icon' => $item['icon']
+            'level'        => $item['level'],
+            'icon'         => $item['icon']
         ];
     }
 

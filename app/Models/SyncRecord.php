@@ -13,4 +13,8 @@ class SyncRecord extends Model
         'created_at',
         'updated_at'
     ];
+    protected $connection = 'game-pgsql';
+
+    public const ITEM = 'item';
+
 }
