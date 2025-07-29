@@ -4,24 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use App\Services\ArenaNetServices\Gw2ItemService;
+use App\Services\ArenaNetServices\ItemService;
 
 class GameItemController extends Controller
 {
     public function index() 
     {
-        $gw2Service = new Gw2ItemService();
-
-        $legendaryArmory = $gw2Service->getLegendaryArmory();
-        
-        return response()->json(
-            $legendaryArmory->json()
-        );
+        $gw2Service = new ItemService();
+        //to do
+        return response()->json();
     }
 
     public function getAllItens()
     {
-        $gw2Service = new Gw2ItemService();
+        $gw2Service = new ItemService();
 
         return response()->json(
             $gw2Service->getAllItems()->json()
@@ -30,7 +26,7 @@ class GameItemController extends Controller
 
     public function show($id) 
     {
-        $gw2Service = new Gw2ItemService();
+        $gw2Service = new ItemService();
 
         return response()->json(
             $gw2Service->getItem($id)->json()
@@ -39,10 +35,10 @@ class GameItemController extends Controller
 
     public function craftRecipe($id) 
     {
-        $gw2Service = new Gw2ItemService();
+        $gw2Service = new ItemService();
 
         return response()->json(
-            $gw2Service->getItemRecipe($id)->json()
+            $gw2Service->getRecipe($id)->json()
         );
     }
 }
