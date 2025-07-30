@@ -55,7 +55,7 @@ class SyncService
         foreach ($chunks as $chunk) {
             $this->progress++;
             $this->logger->startingChunk($this->progress, $this->totalChunks);
-            
+
             $items = $this->itemService->getItems($chunk);
 
             //Tries to sync the chunk items. Returns true if successful.

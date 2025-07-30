@@ -13,14 +13,27 @@ use App\Models\GameItems\{
 class SyncData
 {
     protected DataMapper $dataMapper;
+    protected SyncValidator $syncValidator;
 
-    public function __construct(DataMapper $dataMapper)
+    public function __construct(DataMapper $dataMapper, SyncValidator $syncValidator)
     {
         $this->dataMapper = $dataMapper;
+        $this->syncValidator = $syncValidator;
     }
 
-    public function syncItems(array $items, array $chunk = [])
+    /**
+     * Persists a chunk of items in the database.
+     *
+     * @param array $items Raw data returned by the getItems request.
+     * @param array $chunk Array of item IDs to update. Improves performance by avoiding reprocessing $items to extract IDs.
+     *
+     * @return void Throws a database exception on error.
+     */
+    public function syncItems(array $items, array $chunk)
     {
+        $this->syncValidator->validateItems($items);
+        $this->syncValidator->validateChunk($chunk);
+        
         $data = $this->dataMapper->mapAll($items, $chunk);
 
         DB::connection('game-pgsql')->transaction(function () use ($data) {
@@ -34,16 +47,14 @@ class SyncData
 
     protected function registerItemSync(array $chunk)
     {
-        if (!empty($chunk)) {
-            SyncRecord::insert($chunk);
-        }
+        // $chunk assumed non-empty; validated in SyncValidator before calling.
+        SyncRecord::insert($chunk);
     }
 
     protected function persistItems(array $items)
     {
-        if (!empty($items)) {
-            Item::insert($items);
-        }
+        // $items assumed non-empty; validated in SyncValidator before calling.
+        Item::insert($items);
     }
 
     protected function persistFlags(array $flags)
