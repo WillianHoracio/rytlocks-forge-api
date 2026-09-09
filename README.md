@@ -1,56 +1,57 @@
-# 🔥 Rytlock’s Forge API 🔥
+# Rytlock's Forge API
 
-> **⚠️ This project is a work in progress. Features and APIs are subject to change.**
+Laravel 11 backend project focused on consuming and synchronizing data from the Guild Wars 2 public API into a relational database.
 
-Backend Laravel 11 to track legendary weapon progress in Guild Wars 2.
+The project demonstrates external API integration, data transformation, caching, incremental synchronization, batch processing, validation and transactional persistence.
 
-In the future it will be a complete companion for the game's mechanics and objectives.
+## Main Features
 
----
+- REST API integration
+- External data ingestion and transformation
+- Relational data modeling with Eloquent
+- Incremental synchronization
+- Batch processing in chunks
+- Retry and error handling
+- Response caching
+- Database transactions
+- Synchronization tracking
+- Artisan command for data import
 
-## 🗺️ Roadmap
+## Synchronization Flow
 
-You can follow the project's progress on the [Project Board](https://github.com/users/WillianHoracio/projects/2).
+1. Fetches available item IDs from the Guild Wars 2 API
+2. Removes items already synchronized
+3. Splits remaining IDs into batches
+4. Retrieves item data from the API
+5. Validates and maps the received data
+6. Persists items and related records in a transaction
+7. Registers successfully synchronized items
 
----
+## Technologies
 
-## 🚀 Features
+- PHP 8.2+
+- Laravel 11
+- Eloquent ORM
+- PostgreSQL / MySQL
+- Laravel HTTP Client
+- Laravel Cache
+- Artisan Commands
 
-- 🔑 Authentication via GW2 API Key  
-- 🗃 Inventory, armory, and wallet queries  
-- 🛠 Legendary roadmap management  
-- ⚡ REST endpoints for React frontend
-
----
-
-## 🛠 Technologies
-
-- Laravel 11 (PHP 8.2+)  
-- MySQL / PostgreSQL  
-- Sanctum for authentication (planned)  
-
----
-
-## ⚡ Getting Started
+## Running the Synchronization
 
 ```bash
-# Clone the repository
-git clone https://github.com/YOUR-USERNAME/rytlocks-forge-api.git
+php artisan app:sync-gw2-items
+```
+## Getting Started
+
+git clone https://github.com/WillianHoracio/rytlocks-forge-api.git
 cd rytlocks-forge-api
 
-# Install dependencies
 composer install
-
-# Copy environment file
 cp .env.example .env
-
-# Generate app key
 php artisan key:generate
 
-# Configure database in .env
+Configure the database in .env
 
-# Run migrations
 php artisan migrate
-
-# Start the server
 php artisan serve
